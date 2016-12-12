@@ -1,4 +1,5 @@
 from tkinter import *
+import random
 
 root = Tk()
 
@@ -12,6 +13,7 @@ infoFrame = Frame(root)
 infoFrame.pack()
 
 lines = []
+index = 0
 
 class Line:
   def __init__(self, seed):
@@ -45,16 +47,76 @@ def setInfo():
 
 def newSeedDef():
   clearFrames()
-  seed.delete(0, END)
+  entry.delete(0, END)
   setInfo()
 
-  seed.pack()
+  entry.pack()
   newSeed.pack(side=LEFT)
   saveSeed.pack(side=LEFT)
+  if len(lines) > 0:
+    nextLine.pack(side=LEFT)
+  info.pack()
+
+def nextLineDef():
+  global index
+
+  clearFrames()
+  setInfo()
+
+  if len(lines) == 1:
+    index = 0
+  else:
+    index = (index + random.randint(1,len(lines)-1)) % len(lines)
+
+  display.configure(state="normal")
+  display.delete(1.0, END)
+  display.insert(INSERT, lines[index].seed)
+  display.configure(state="disabled")
+
+  entry.delete(0, END)
+
+  display.pack()
+  entry.pack()
+
+  newSeed.pack(side=LEFT)
+  if len(lines) > 0:
+    nextLine.pack(side=LEFT)
+  saveDraft.pack(side=LEFT)
+  saveLine.pack(side=LEFT)
+
+  info.pack()
+
+def saveDraftDef():
+  global index
+
+  text = entry.get()
+  lines[index].line = text
+
+  clearFrames()
+  setInfo()
+
+  message.pack()
+  newSeed.pack(side=LEFT)
+  nextLine.pack(side=LEFT)
+  info.pack()
+
+def saveLineDef():
+  global index
+
+  text = entry.get()
+  lines[index].line = text
+  lines[index].complete = True
+
+  clearFrames()
+  setInfo()
+
+  message.pack()
+  newSeed.pack(side=LEFT)
+  nextLine.pack(side=LEFT)
   info.pack()
 
 def saveSeedDef():
-  text = seed.get()
+  text = entry.get()
   lines.append(Line(text))
 
   clearFrames()
@@ -62,13 +124,18 @@ def saveSeedDef():
 
   message.pack()
   newSeed.pack(side=LEFT)
+  nextLine.pack(side=LEFT)
   info.pack()
 
-message = Label(textFrame, text="Message!", width=80)
-seed = Entry(textFrame, width = 80)
+message = Label(textFrame, text="Saved!", width=80)
+display = Text(textFrame, width=80, height=3, state="disabled")
+entry = Entry(textFrame, width=80)
 newSeed = Button(buttonFrame, text="New Seed", command=newSeedDef)
 saveSeed = Button(buttonFrame, text="Save Seed", command=saveSeedDef)
-info = Text(infoFrame, width=80, height=3, state='disabled')
+nextLine = Button(buttonFrame, text="Next Line", command=nextLineDef)
+saveDraft = Button(buttonFrame, text="Save Draft", command=saveDraftDef)
+saveLine = Button(buttonFrame, text="Save Line", command=saveLineDef)
+info = Text(infoFrame, width=80, height=3, state="disabled")
 
 message.pack()
 newSeed.pack()
