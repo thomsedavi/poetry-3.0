@@ -45,16 +45,23 @@ def setInfo():
   info.insert(INSERT, "Amount completed: " + str(complete))
   info.configure(state="disabled")
 
+def packButtons():
+  newSeed.pack(side=LEFT)
+  nextLineTrue = False
+  for line in lines:
+    if not line.complete:
+      nextLineTrue = True
+  if nextLineTrue:
+    nextLine.pack(side=LEFT)
+
 def newSeedDef():
   clearFrames()
   entry.delete(0, END)
   setInfo()
 
   entry.pack()
-  newSeed.pack(side=LEFT)
+  packButtons()
   saveSeed.pack(side=LEFT)
-  if len(lines) > 0:
-    nextLine.pack(side=LEFT)
   info.pack()
 
 def nextLineDef():
@@ -68,6 +75,10 @@ def nextLineDef():
   else:
     index = (index + random.randint(1,len(lines)-1)) % len(lines)
 
+  while lines[index].complete:
+    index += 1
+    index %= len(lines)
+
   display.configure(state="normal")
   display.delete(1.0, END)
   display.insert(INSERT, lines[index].seed)
@@ -78,9 +89,7 @@ def nextLineDef():
   display.pack()
   entry.pack()
 
-  newSeed.pack(side=LEFT)
-  if len(lines) > 0:
-    nextLine.pack(side=LEFT)
+  packButtons()
   saveDraft.pack(side=LEFT)
   saveLine.pack(side=LEFT)
 
@@ -96,8 +105,7 @@ def saveDraftDef():
   setInfo()
 
   message.pack()
-  newSeed.pack(side=LEFT)
-  nextLine.pack(side=LEFT)
+  packButtons()
   info.pack()
 
 def saveLineDef():
@@ -111,8 +119,7 @@ def saveLineDef():
   setInfo()
 
   message.pack()
-  newSeed.pack(side=LEFT)
-  nextLine.pack(side=LEFT)
+  packButtons()
   info.pack()
 
 def saveSeedDef():
@@ -123,8 +130,7 @@ def saveSeedDef():
   setInfo()
 
   message.pack()
-  newSeed.pack(side=LEFT)
-  nextLine.pack(side=LEFT)
+  packButtons()
   info.pack()
 
 message = Label(textFrame, text="Saved!", width=80)
