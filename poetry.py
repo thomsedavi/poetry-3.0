@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import filedialog
 import pickle
 import random
 
@@ -138,11 +139,13 @@ def saveSeedDef():
   info.pack()
 
 def saveFileDef():
-  pickle.dump(lines, open("test.ptry", "wb"))
+  filename = filedialog.asksaveasfilename()
+  pickle.dump(lines, open(filename, "wb"))
 
 def loadFileDef():
   global lines
-  lines = pickle.load(open("test.ptry", "rb"))
+  filename = filedialog.askopenfilename()
+  lines = pickle.load(open(filename, "rb"))
   clearFrames()
   setInfo()
   packButtons()
@@ -161,7 +164,7 @@ loadFile = Button(buttonFrame, text="Load File", command=loadFileDef)
 info = Text(infoFrame, width=80, height=3, state="disabled")
 
 message.pack()
-newSeed.pack()
+packButtons()
 
 info.pack()
 
