@@ -1,4 +1,5 @@
 from tkinter import *
+import pickle
 import random
 
 root = Tk()
@@ -53,6 +54,8 @@ def packButtons():
       nextLineTrue = True
   if nextLineTrue:
     nextLine.pack(side=LEFT)
+  saveFile.pack(side=LEFT)
+  loadFile.pack(side=LEFT)
 
 def newSeedDef():
   clearFrames()
@@ -85,6 +88,7 @@ def nextLineDef():
   display.configure(state="disabled")
 
   entry.delete(0, END)
+  entry.insert(INSERT, lines[index].line)
 
   display.pack()
   entry.pack()
@@ -133,6 +137,17 @@ def saveSeedDef():
   packButtons()
   info.pack()
 
+def saveFileDef():
+  pickle.dump(lines, open("test.ptry", "wb"))
+
+def loadFileDef():
+  global lines
+  lines = pickle.load(open("test.ptry", "rb"))
+  clearFrames()
+  setInfo()
+  packButtons()
+  info.pack()
+
 message = Label(textFrame, text="Saved!", width=80)
 display = Text(textFrame, width=80, height=3, state="disabled")
 entry = Entry(textFrame, width=80)
@@ -141,6 +156,8 @@ saveSeed = Button(buttonFrame, text="Save Seed", command=saveSeedDef)
 nextLine = Button(buttonFrame, text="Next Line", command=nextLineDef)
 saveDraft = Button(buttonFrame, text="Save Draft", command=saveDraftDef)
 saveLine = Button(buttonFrame, text="Save Line", command=saveLineDef)
+saveFile = Button(buttonFrame, text="Save File", command=saveFileDef)
+loadFile = Button(buttonFrame, text="Load File", command=loadFileDef)
 info = Text(infoFrame, width=80, height=3, state="disabled")
 
 message.pack()
